@@ -19,7 +19,7 @@ const GET_CURRENT_USER = gql`
 const GET_REPOSITORIES_OF_CURRENT_USER = gql`
   query($cursor: String) {
     viewer {
-      repositories(first: 5, orderBy: {direction: DESC, field: STARGAZERS}, after: $cursor) {
+      repositories(first: 1, orderBy: {direction: DESC, field: STARGAZERS}, after: $cursor) {
         edges {
           node {
             ...repository
@@ -37,8 +37,8 @@ const GET_REPOSITORIES_OF_CURRENT_USER = gql`
 
 
 const Profile = () => (
-  <Query query={GET_REPOSITORIES_OF_CURRENT_USER}>
-    {({data, loading, error}) => {
+  <Query query={GET_REPOSITORIES_OF_CURRENT_USER} notifyOnNetworkStatusChange={true}>
+    {({data, loading, error, fetchMore}) => {
 
       if (error) {
         return <ErrorMessage error={error} />;
@@ -46,7 +46,7 @@ const Profile = () => (
 
       const {viewer} = data;
 
-      if (loading || !viewer) {
+      if (loading && !viewer) {
         return <Loading />;
       }
 
@@ -54,7 +54,7 @@ const Profile = () => (
         <div>
           <div>My Profile</div>
 
-          <RepositoryList repositories={viewer.repositories} />
+          <RepositoryList repositories={viewer.repositories} fetchMore={fetchMore} loading={loading} />
 
         </div>
       );
