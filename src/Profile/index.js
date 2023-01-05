@@ -54,7 +54,11 @@ const Profile = () => (
         <div>
           <div>My Profile</div>
 
-          <RepositoryList repositories={viewer.repositories} fetchMore={fetchMore} loading={loading} />
+          <RepositoryList
+            loading={loading}
+            repositories={viewer.repositories}
+            fetchMore={fetchMore}
+            entry={'viewer'} />
 
         </div>
       );
